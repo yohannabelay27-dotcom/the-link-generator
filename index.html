@@ -1,60 +1,167 @@
 <!DOCTYPE html>
-<html lang="am"><head><meta charset="utf-8">
+<html lang="am">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Time-Limit Link Generator | ጊዜ-ገደብ ሊንክ አመንጪ</title>
+<title>የመግቢያ ስካነር | Gate Scanner</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#a8812c;--gold2:#d4af5a;--ink:#4a3a22;--bg:#f8ebd3;--card:#fffaf0;--bad:#b03030;--ok:#2f7a3d;color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--gold:#a8812c;--gold2:#d4af5a;--ink:#4a3a22;--bg:#f8ebd3;--card:#fffaf0;--ok:#2f7a3d;--bad:#b03030;color-scheme:light}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#f3e6c8;--bg:#231c10;--card:#33290f}}
-*{box-sizing:border-box;margin:0}html,body{background:var(--bg);color:var(--ink);font-family:'Noto Serif Ethiopic',serif}
-main{max-width:520px;margin:0 auto;padding:20px 16px 50px;display:flex;flex-direction:column;gap:14px}
-h1{font-size:20px;color:var(--gold);text-align:center}.sm{font-size:13px;opacity:.8;line-height:1.7}
-.box{background:var(--card);border:1px solid var(--gold2);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px}
-label{font-size:13px;font-weight:600}
-input{width:100%;padding:11px;border:1px solid var(--gold2);border-radius:10px;font:inherit;font-size:15px;background:var(--card);color:var(--ink)}
-button{font:600 15px 'Noto Serif Ethiopic',serif;padding:11px 16px;border-radius:30px;border:1.5px solid var(--gold);background:var(--card);color:var(--gold);cursor:pointer}
-button.pri{background:var(--gold);color:#fff}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}
-.out{word-break:break-all;font-size:13px;background:rgba(212,175,90,.18);padding:10px;border-radius:10px}
-.li{border-top:1px solid rgba(212,175,90,.6);padding:10px 0;font-size:13px;word-break:break-all}
-.tag{display:inline-block;padding:2px 10px;border-radius:20px;color:#fff;font-size:12px;margin-left:6px}
-</style></head><body><main>
-<h1>⏳ ጊዜ-ገደብ ያለው ሊንክ አመንጪ</h1>
-<p class="sm" style="text-align:center">ለደንበኛ የሚሰጥ የቁጥር አመንጪ ሊንክ፤ ከመረጡት ቀን በኋላ ያቆማል። ዋናው ግብዣ አይነካም። (ለእርስዎ ብቻ — ለማንም አይላኩ)</p>
-<div class="box">
-  <label>የግብዣ ድረ-ገጽ ሊንክ (Invitation link)</label>
-  <input id="base" placeholder="https://…">
-  <label>የደንበኛ ስም (ለራስዎ ማስታወሻ)</label>
-  <input id="who" placeholder="ለምሳሌ፦ ያስሚን & አሚር">
-  <label>የሚያልቅበት ቀን (Expires on — እስከዚህ ቀን ይሰራል)</label>
-  <input id="d" type="date">
-  <div class="row"><button id="p7">+7 ቀን</button><button id="p14">+14 ቀን</button><button id="p30">+30 ቀን</button></div>
-  <button class="pri" id="go">ሊንክ አመንጭ</button>
-  <div id="res" style="display:none;flex-direction:column;gap:8px"><div class="out" id="url"></div><div class="sm" id="exp"></div><button id="cp">📋 ሊንክ ቅዳ</button></div>
-</div>
-<div class="box"><b style="font-size:15px">ያመነጩዋቸው ሊንኮች (በዚህ ስልክ ላይ)</b><div id="hist" class="sm">ገና የለም</div></div>
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Noto Serif Ethiopic',serif}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+main{max-width:480px;margin:0 auto;padding:18px 16px 40px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:19px;color:var(--gold);text-align:center}.sub{font-size:13px;text-align:center;opacity:.75}
+.box{background:var(--card);border:1px solid var(--gold2);border-radius:16px;padding:12px}
+#cam{position:relative;aspect-ratio:1;background:#1b1508;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#d4af5a;text-align:center;font-size:14px;padding:12px}
+#cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#cam .fr{position:absolute;inset:18%;border:3px solid var(--gold2);border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.35);display:none}
+button,.fbtn{font:600 15px 'Noto Serif Ethiopic',serif;padding:11px 16px;border-radius:30px;border:1.5px solid var(--gold);background:var(--card);color:var(--gold);cursor:pointer;text-align:center}
+button.pri{background:var(--gold);color:#fff}
+.row{display:flex;gap:8px;margin-top:10px}.row>*{flex:1}
+input[type=number],input[type=text]{flex:2;padding:10px;border:1px solid var(--gold2);border-radius:10px;font-size:16px;background:var(--card);color:var(--ink)}
+#res{border-radius:16px;padding:22px 14px;text-align:center;display:none}
+#res.ok{background:var(--ok);color:#fff}#res.bad{background:var(--bad);color:#fff}#res.warn{background:var(--gold);color:#fff}
+#res .ic{font-size:64px;line-height:1}#res .n{font-size:30px;font-weight:700;margin:6px 0}#res .m{font-size:19px;font-weight:700}#res .s{font-size:13px;opacity:.9;margin-top:4px}
+.stat{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px}
+.li{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-top:1px solid rgba(212,175,90,.5)}
+.pend{font-size:12px;text-align:center;color:#a8812c}#ovr{display:none}#res{position:sticky;top:6px;z-index:20;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+</style>
+</head>
+<body>
+<main>
+  <h1>🚪 የመግቢያ ስካነር · Gate Scanner</h1>
+  <div class="sub"><a href="#" id="cfg" style="color:inherit">⚙ ማዋቀሪያ</a> · እያንዳንዱ QR አንድ ጊዜ ብቻ ይሰራል · Each QR works once</div>
+  <label class="box" style="display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer"><input type="checkbox" id="tm" style="width:20px;height:20px"> 🧪 <b>የሙከራ ቅኝት · Test mode</b> <span style="opacity:.7">(አይመዘገብም)</span></label>
+  <div id="tb" style="display:none;background:#e8b923;color:#3a2a00;border-radius:12px;padding:10px;text-align:center;font-weight:700;font-size:14px">🧪 TEST MODE — ምንም አይመዘገብም · Nothing is recorded<br><a href="#" id="trs" style="color:inherit;font-weight:600">↺ ሙከራውን ዳግም አስጀምር · Reset test</a></div>
+  <div id="res"><div class="ic" id="ric"></div><div class="n" id="rn"></div><div class="m" id="rm"></div><div class="s" id="rs"></div></div>
+  <button id="ovr">↩ ዳግም ፍቀድ (Supervisor override)</button>
+  <div class="box"><div class="row" style="margin-top:0"><input type="text" id="evt" placeholder="ዝግጅት ኮድ · Event code" maxlength="6" autocapitalize="off"><input type="text" id="staff" placeholder="የሠራተኛ ስም · Staff name"></div></div>
+  <div class="box">
+    <div id="cam"><video id="vid" playsinline muted style="display:none"></video><div class="fr" id="fr"></div><span id="camMsg">ካሜራውን ለመጀመር ከታች ይንኩ</span></div>
+    <div class="row"><button class="pri" id="start">📷 ካሜራ ጀምር</button></div>
+    <div class="row"><label class="fbtn">🖼 ፎቶ ምረጥ<input type="file" accept="image/*" id="file" hidden></label></div>
+    <div class="row"><input type="number" id="man" min="1" placeholder="ቁጥር በእጅ (Number)"><button id="mgo">አረጋግጥ</button></div>
+  </div>
+  <div class="box"><div class="stat"><b>የገቡ እንግዶች · Checked in</b><b id="cnt">–</b></div><div class="pend" id="pend"></div><div id="list" class="sub" style="text-align:left">…</div></div>
+  <details class="box" id="dz"><summary style="cursor:pointer;font-weight:700">🗂 ታሪክ እና ዳግም ማስጀመር · History &amp; Reset</summary>
+    <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+      <button id="hbtn">📜 የቀደሙ ዝግጅቶች ታሪክ · Past events</button><div id="hlist" class="sub" style="text-align:left"></div>
+      <div style="border:1.5px solid #b03030;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px"><b style="color:#b03030">⚠ አደገኛ ክፍል · Danger zone</b>
+        <div class="sub" style="text-align:left">ለቀጣዩ ደንበኛ ስካነሩን ለማዘጋጀት የዚህን ዝግጅት ቅኝቶች ያስቀምጣል እና ያጸዳል። ዝርዝሩ ወደ ታሪክ ይቀመጣል — አይጠፋም።</div>
+        <input type="text" id="rlabel" placeholder="የዝግጅቱ ስም (ለምሳሌ ያስሚን &amp; አሚር)">
+        <input type="text" id="rcode" placeholder="ለማረጋገጥ የዝግጅት ኮዱን ይጻፉ · Type the event code" autocapitalize="off">
+        <input type="password" id="rsup" placeholder="የሱፐርቫይዘር ኮድ · Supervisor code">
+        <button id="rgo" style="border-color:#b03030;color:#b03030">🔄 አስቀምጥ እና ዳግም አስጀምር · Archive &amp; Reset</button>
+      </div>
+    </div></details>
 </main>
+<canvas id="cv" style="display:none"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 <script>
 (function(){
-  var SECRET='ec2b0b0c02f0186963f6ecf8',$=function(i){return document.getElementById(i)};
+  var busy=false,lastTxt='',lastAt=0,stream=null,testMode=false,testSeen={},lastP=null,$=function(i){return document.getElementById(i)};
   function LG(k,d){try{return localStorage.getItem(k)||d}catch(e){return d}}function LS(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-  async function sig(e){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(SECRET+':'+e));return Array.from(new Uint8Array(b)).slice(0,5).map(function(x){return('0'+x.toString(16)).slice(-2)}).join('')}
-  function today(){var d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()}
-  function fmt(n){var s=String(n);return s.slice(6)+'/'+s.slice(4,6)+'/'+s.slice(0,4)}
-  function iso(dt){return dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2)+'-'+('0'+dt.getDate()).slice(-2)}
-  function plus(n){var d=new Date();d.setDate(d.getDate()+n);$('d').value=iso(d)}
-  $('base').value=LG('base','https://claude.ai/artifact/XhoZLo1uYCyb2NN2WaGag4');
-  $('base').oninput=function(){LS('base',this.value)};
-  $('p7').onclick=function(){plus(7)};$('p14').onclick=function(){plus(14)};$('p30').onclick=function(){plus(30)};
-  function hist(){var L=[];try{L=JSON.parse(LG('hist','[]'))}catch(e){}var H=$('hist');H.innerHTML='';if(!L.length){H.textContent='ገና የለም';return}
-    L.slice().reverse().forEach(function(r){var d=document.createElement('div');d.className='li';var exp=+r.e<today();
-      var b=document.createElement('b');b.textContent=(r.w||'(ስም የለም)')+' · ኮድ '+(r.id||'-');var t=document.createElement('span');t.className='tag';t.style.background=exp?'#b03030':'#2f7a3d';t.textContent=exp?'ጊዜው አልፏል':'ይሰራል';
-      d.appendChild(b);d.appendChild(t);d.appendChild(document.createElement('br'));d.appendChild(document.createTextNode('እስከ '+fmt(r.e)+' · '));d.appendChild(document.createElement('br'));d.appendChild(document.createTextNode(r.u));H.appendChild(d)})}
-  $('go').onclick=async function(){var v=$('d').value,base=$('base').value.trim().split('#')[0];
-    if(!base){alert('የግብዣ ሊንኩን ያስገቡ');return}if(!v){alert('የሚያልቅበትን ቀን ይምረጡ');return}
-    var e=v.replace(/-/g,'');if(+e<today()){alert('ቀኑ ያለፈ ነው');return}
-    var al='abcdefghjkmnpqrstuvwxyz23456789',rb=crypto.getRandomValues(new Uint8Array(6)),id=Array.from(rb).map(function(x){return al[x%al.length]}).join(''),u=base+'#gen-'+e+'-'+id+'-'+await sig(e+'-'+id);$('url').textContent=u;$('exp').textContent='✓ ዝግጅት ኮድ (Event code): '+id+' — ለመግቢያ ሠራተኞች ይስጡ · እስከ '+fmt(e)+' ድረስ ይሰራል፤ ከዚያ በኋላ "ጊዜው አልፏል" ይላል።';$('res').style.display='flex';
-    var L=[];try{L=JSON.parse(LG('hist','[]'))}catch(x){}L.push({w:$('who').value.trim(),e:e,u:u,id:id});LS('hist',JSON.stringify(L.slice(-50)));hist();
-    $('cp').onclick=function(){try{navigator.clipboard.writeText(u);this.textContent='✓ ተቀድቷል'}catch(x){prompt('Copy:',u)}}};
-  hist();
+  function pad(n){return('000'+n).slice(-3)}
+  function tm(t){return new Date(t).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}
+  function parse(t){var m=/INV-([a-z0-9]{6})-(\d{1,5})-([0-9a-f]{8})/i.exec(t);return m?{evt:m[1].toLowerCase(),n:+m[2],sig:m[3].toLowerCase()}:null}
+  async function gsig(g,evt,n){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(g+':'+evt+':'+(+n)));return Array.from(new Uint8Array(b)).slice(0,4).map(function(x){return('0'+x.toString(16)).slice(-2)}).join('')}
+  function curEvt(){var v=$('evt').value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');return v}
+  function show(cls,ic,n,m,s){var r=$('res');r.className=cls;r.style.display='block';$('ric').textContent=ic;$('rn').textContent=n;$('rm').textContent=m;$('rs').textContent=s||'';$('ovr').style.display=(cls==='bad'&&lastP&&!testMode)?'block':'none';
+    try{navigator.vibrate&&navigator.vibrate(cls==='ok'?80:[120,60,120])}catch(e){}void 0}
+  function setup(force){var u=LG('api',''),k=LG('key','');if(force||!u||!k){u=prompt('Google Apps Script Web App URL:',u||'');if(u===null)return;k=prompt('የሠራተኞች የይለፍ ቃል (Staff passcode):',k||'');if(k===null)return;LS('api',u.trim());LS('key',k.trim())}}
+  function api(o){var u=LG('api','');if(!u)return Promise.reject(new Error('setup'));o.key=LG('key','');o._=Date.now();var q=Object.keys(o).map(function(k){return k+'='+encodeURIComponent(o[k])}).join('&');
+    return fetch(u+(u.indexOf('?')<0?'?':'&')+q).then(function(r){return r.json()})}
+  function used(){try{return JSON.parse(LG('used','{}'))}catch(e){return {}}}function saveUsed(U){LS('used',JSON.stringify(U))}
+  function queue(){try{return JSON.parse(LG('queue','[]'))}catch(e){return []}}function saveQ(Q){LS('queue',JSON.stringify(Q));pendUI()}
+  function pendUI(){var n=queue().length;$('pend').textContent=n?('⏳ '+n+' ቅኝት ሲገናኝ ይላካል · pending sync'):''}
+  async function getG(){return LG('gsec','')}
+  async function refresh(){var ev=curEvt();if(!ev){$('list').textContent='የዝግጅት ኮድ ያስገቡ';return}
+    try{var d=await api({action:'init',evt:ev});if(!d.ok){$('list').textContent=d.error==='auth'?'የይለፍ ቃል ስህተት (wrong passcode)':'ስህተት';return}
+      LS('gsec',d.gsec);var U={};d.used.forEach(function(r){U[ev+'-'+r.n]=r.t});var all=used();Object.keys(all).forEach(function(k){if(k.indexOf(ev+'-')!==0)U[k]=all[k]});saveUsed(U);
+      var rows=d.used.slice().sort(function(a,b){return b.t-a.t});$('cnt').textContent=rows.length;$('list').innerHTML=rows.slice(0,8).map(function(r){return'<div class="li"><span>No. '+pad(r.n)+'</span><span>'+tm(r.t)+'</span></div>'}).join('')||'ገና ማንም አልገባም'}catch(e){$('list').textContent='ያልተገናኘ — ከመስመር ውጭ ሁነታ (offline mode)'}}
+  async function claimB(p){
+    try{var d=await api({action:'claim',evt:p.evt,n:p.n,sig:p.sig,staff:LG('staff','')});
+      if(!d.ok)return{status:d.error==='auth'?'auth':d.error==='sig'?'invalid':'error'};
+      var U=used();U[p.evt+'-'+p.n]=d.usedAt||Date.now();saveUsed(U);return{status:d.status,usedAt:d.usedAt}}
+    catch(e){var g=LG('gsec','');if(!g)return{status:'error'};
+      if(await gsig(g,p.evt,p.n)!==p.sig)return{status:'invalid'};
+      var U=used(),k=p.evt+'-'+p.n;if(U[k])return{status:'used',usedAt:U[k]};
+      U[k]=Date.now();saveUsed(U);var Q=queue();Q.push({evt:p.evt,n:p.n,sig:p.sig,t:U[k],staff:LG('staff','')});saveQ(Q);return{status:'valid',offline:true}}}
+  async function overrideB(p,code){try{var d=await api({action:'reset',evt:p.evt,n:p.n,sup:code});if(d.ok){var U=used();delete U[p.evt+'-'+p.n];saveUsed(U);return true}}catch(e){}return false}
+  async function sync(){var Q=queue();if(!Q.length)return;var rest=[],conf=0;
+    for(var i=0;i<Q.length;i++){var it=Q[i];try{var d=await api({action:'claim',evt:it.evt,n:it.n,sig:it.sig,staff:it.staff,t:it.t,off:1});if(!(d&&d.ok))rest.push(it);else if(d.status==='used'&&d.usedAt!==it.t)conf++}catch(e){rest.push(it)}}
+    saveQ(rest);if(conf)alert('⚠ '+conf+' ቅኝት ከሌላ በር ጋር ተጋጭቷል (conflict) — Sheet ይመልከቱ');if(!rest.length)refresh()}
+  function pendingCount(){return queue().length}
+  async function archiveB(evt,label,sup){var d=await api({action:'archive',evt:evt,label:label,sup:sup});if(d&&d.ok){var U=used();Object.keys(U).forEach(function(k){if(k.indexOf(evt+'-')===0)delete U[k]});saveUsed(U)}return d}
+  function histListB(){return api({action:'histlist'})}
+  function histRowsB(id){return api({action:'histrows',id:id})}
+  function start(){$('cfg').onclick=function(e){e.preventDefault();setup(true);refresh()};setup(false);pendUI();refresh();setInterval(sync,12000);window.addEventListener('online',sync)}
+  async function process(p){
+    if(busy)return;busy=true;lastP=p;
+    try{var ev=curEvt();
+      if(!ev||ev.length!==6){show('warn','⚠','No. '+pad(p.n),ev?'የዝግጅት ኮድ 6 ፊደል/ቁጥር መሆን አለበት':'የዝግጅት ኮድ ያስገቡ',ev?('You typed "'+ev+'" — the code has exactly 6 characters'):'Enter the Event code in the box above first');return}
+      if(p.evt!==ev){show('warn','⚠','No. '+pad(p.n),'የሌላ ዝግጅት QR · WRONG EVENT','ይህ QR ለዚህ ዝግጅት አይደለም');return}
+      var g=await getG();if(g&&await gsig(g,p.evt,p.n)!==p.sig){show('bad','✗','No. '+pad(p.n),'ሐሰተኛ QR · INVALID','ፊርማው አይመሳሰልም · Signature does not match');lastP=null;$('ovr').style.display='none';return}
+      if(testMode){var k=p.evt+'-'+p.n;if(testSeen[k]){show('bad','✗','No. '+pad(p.n),'TEST · አይገኝም · NOT AVAILABLE','ሙከራ ብቻ — ሁለተኛ ቅኝት ውድቅ ይሆናል · Test only, nothing recorded')}else{testSeen[k]=1;show('ok','✓','No. '+pad(p.n),'TEST · ትክክለኛ · VALID','ሙከራ ብቻ — አልተመዘገበም · Test only, nothing recorded')}return}
+      var r=await claimB(p);
+      if(r.status==='valid'){show('ok','✓','No. '+pad(p.n),'ትክክለኛ ግብዣ · VALID',r.offline?'OFFLINE — ከመስመር ውጭ ተመዝግቧል፣ ሲገናኝ ይላካል · will sync':'እንኳን በደህና መጡ · Welcome');refresh()}
+      else if(r.status==='used'){show('bad','✗','No. '+pad(p.n),'አይገኝም · NOT AVAILABLE','ቀድሞ ተቃኝቷል · Already used'+(r.usedAt?' @ '+tm(r.usedAt):''))}
+      else if(r.status==='invalid'){show('bad','✗','No. '+pad(p.n),'ሐሰተኛ QR · INVALID','');lastP=null}
+      else if(r.status==='auth'){show('warn','⚠','No. '+pad(p.n),'የይለፍ ቃል ስህተት','Wrong passcode — open ⚙')}
+      else{show('warn','⚠','No. '+pad(p.n),'ማረጋገጥ አልተቻለም','ግንኙነት ወይም ማዋቀሪያ ያረጋግጡ · Check connection/setup')}
+    }catch(e){show('warn','⚠','No. '+pad(p.n),'ስህተት',String(e&&e.message||e))}finally{busy=false}}
+  function handle(t){var p=parse(t);if(!p){if(/#v\d|Invitation No\./i.test(t))show('warn','⚠','','የድሮ QR · OLD QR','ይህ QR በአሮጌው ዘዴ የተሰራ ነው — አዲስ ሊንክ እና QR ያመንጩ · Regenerate this guest QR');else show('warn','?','','የግብዣ QR አይደለም','Not an invitation QR');return}process(p)}
+  $('ovr').onclick=async function(){if(!lastP)return;var c=prompt('የሱፐርቫይዘር ኮድ (Supervisor code):');if(c===null)return;var ok=await overrideB(lastP,c);
+    if(ok){show('ok','✓','No. '+pad(lastP.n),'ዳግም ተፈቅዷል · Reset','እንደገና መቃኘት ይቻላል · Can be scanned again');refresh()}else{alert('ስህተት · Wrong code or failed')}};
+  function decode(img,w,h){var c=$('cv'),x=c.getContext('2d',{willReadFrequently:true});c.width=w;c.height=h;x.drawImage(img,0,0,w,h);return jsQR(x.getImageData(0,0,w,h).data,w,h,{inversionAttempts:'attemptBoth'})}
+  function loop(){var v=$('vid');if(!stream)return;
+    if(v.readyState>=2&&!busy){var sc=Math.min(1,640/v.videoWidth),c=window.jsQR&&decode(v,Math.round(v.videoWidth*sc),Math.round(v.videoHeight*sc));
+      if(c&&c.data){var fresh=(c.data!==lastTxt||Date.now()-lastAt>6000);lastTxt=c.data;lastAt=Date.now();if(fresh)handle(c.data)}}
+    requestAnimationFrame(loop)}
+  $('start').onclick=async function(){
+    if(stream){stream.getTracks().forEach(function(t){t.stop()});stream=null;$('vid').style.display='none';$('fr').style.display='none';$('camMsg').style.display='';$('camMsg').textContent='ካሜራ ቆሟል';this.textContent='📷 ካሜራ ጀምር';return}
+    try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});var v=$('vid');v.srcObject=stream;await v.play();v.style.display='block';$('fr').style.display='block';$('camMsg').style.display='none';this.textContent='⏹ አቁም';loop()}
+    catch(e){stream=null;$('camMsg').style.display='';$('camMsg').textContent='ቀጥታ ካሜራ አልተከፈተም ('+(e&&e.name||'error')+')። "🖼 ፎቶ ምረጥ" ን ይንኩ።'}};
+  $('file').onchange=function(e){var f=e.target.files[0];if(!f)return;var inp=e.target,im=new Image();
+    im.onload=async function(){var txt=null;
+      try{if(window.BarcodeDetector){var bd=new BarcodeDetector({formats:['qr_code']}),r=await bd.detect(im);if(r&&r.length)txt=r[0].rawValue}}catch(_){}
+      if(!txt&&window.jsQR){var m=Math.max(im.width,im.height),sizes=[1600,1000,700,450];for(var i=0;i<sizes.length&&!txt;i++){var sc=Math.min(1,sizes[i]/m),c=decode(im,Math.max(1,Math.round(im.width*sc)),Math.max(1,Math.round(im.height*sc)));if(c&&c.data)txt=c.data}}
+      URL.revokeObjectURL(im.src);inp.value='';
+      if(txt)handle(txt);else show('warn','?','','QR አልተነበበም','QRው ሙሉ በሙሉ በፎቶው ውስጥ ይሁን፣ የስክሪን ብሩህነት ከፍ ያድርጉ (Fill the frame, raise brightness, retake)')};
+    im.src=URL.createObjectURL(f)};
+  $('mgo').onclick=async function(){var n=parseInt($('man').value,10),ev=curEvt(),g=await getG();if(!(n>0))return;
+    if(!ev||!g){show('warn','⚠','','የዝግጅት ኮድ ያስገቡ','Event code required (and one online sync first)');return}
+    $('man').value='';process({evt:ev,n:n,sig:await gsig(g,ev,n)})};
+  $('trs').onclick=function(e){e.preventDefault();testSeen={};$('res').style.display='none'};
+  $('tm').onchange=function(){testMode=this.checked;testSeen={};$('tb').style.display=testMode?'block':'none';$('res').style.display='none'};
+  var hm=/^#([a-z0-9]{6})$/i.exec(location.hash);if(hm)LS('evt',hm[1].toLowerCase());$('evt').value=LG('evt','');$('staff').value=LG('staff','');
+  $('evt').oninput=function(){var v=this.value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');LS('evt',v);if(v.length===6){try{history.replaceState(null,'','#'+v)}catch(e){}}refresh()};$('staff').oninput=function(){LS('staff',this.value.trim())};
+  function fmtDT(t){return new Date(t).toLocaleString([], {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}
+  async function loadHist(){var L=$('hlist');L.textContent='…';var r;try{r=await histListB()}catch(e){L.textContent='ማንበብ አልተቻለም';return}
+    var items=(r&&r.items)||[];L.innerHTML='';if(!items.length){L.textContent='ገና ታሪክ የለም · No history yet';return}
+    items.forEach(function(it){var d=document.createElement('div');d.className='li';var h=document.createElement('div');h.style.cssText='cursor:pointer;font-weight:600';h.textContent='📁 '+(it.label||'(ስም የለም)')+' · '+it.evt+' · '+it.count+' ✓ · '+fmtDT(it.at);var body=document.createElement('div');body.style.display='none';d.appendChild(h);d.appendChild(body);L.appendChild(d);
+      h.onclick=async function(){if(body.style.display==='block'){body.style.display='none';return}body.textContent='…';body.style.display='block';var rr;try{rr=await histRowsB(it.id)}catch(e){body.textContent='ማንበብ አልተቻለም';return}
+        var rows=(rr&&rr.rows)||[];body.innerHTML='';var csv='No,Time,Staff,Offline\n'+rows.map(function(x){return x.n+','+new Date(x.t).toISOString()+','+String(x.staff||'').replace(/,/g,' ')+','+(x.off||'')}).join('\n');
+        var pre=document.createElement('div');pre.style.cssText='max-height:160px;overflow:auto;font-size:12px;margin:6px 0;white-space:pre-wrap';pre.textContent=rows.map(function(x){return 'No. '+pad(x.n)+' · '+tm(x.t)+(x.staff?' · '+x.staff:'')}).join('\n');
+        var b=document.createElement('button');b.textContent='⬇ CSV';b.onclick=function(){try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='checkin-'+it.evt+'.csv';document.body.appendChild(a);a.click();a.remove()}catch(e){}try{navigator.clipboard.writeText(csv);b.textContent='✓ ተቀድቷል (copied)'}catch(e){prompt('CSV:',csv)}};
+        body.appendChild(pre);body.appendChild(b)}})}
+  $('hbtn').onclick=loadHist;
+  $('rgo').onclick=async function(){var ev=curEvt(),btn=this;
+    if(!ev){alert('የዝግጅት ኮድ ያስገቡ · Enter the event code');return}
+    if(testMode){alert('የሙከራ ሁነታን ያጥፉ · Turn off test mode first');return}
+    if($('rcode').value.trim().toLowerCase()!==ev){alert('ለማረጋገጥ የዝግጅት ኮዱን በትክክል ይጻፉ: '+ev);return}
+    if(!$('rsup').value){alert('የሱፐርቫይዘር ኮድ ያስገቡ · Enter supervisor code');return}
+    if(pendingCount()){alert('መጀመሪያ ያልተላኩ ቅኝቶች ይላኩ (ኢንተርኔት ያገናኙ) · Sync pending scans first');return}
+    if(!confirm('⚠ የ"'+ev+'" ዝግጅት ቅኝቶች ወደ ታሪክ ይቀመጡና ከስካነሩ ይጸዳሉ። ይቀጥሉ?\nArchive and clear event '+ev+'?'))return;
+    if(!confirm('የመጨረሻ ማረጋገጫ · FINAL CONFIRMATION\nወደ ታሪክ ከተቀመጠ በኋላ እንግዶቹ እንደገና መቃኘት ይችላሉ።'))return;
+    btn.disabled=true;var r;try{r=await archiveB(ev,$('rlabel').value.trim(),$('rsup').value)}catch(e){r=null}btn.disabled=false;
+    if(r&&r.ok){$('rsup').value='';$('rcode').value='';$('rlabel').value='';$('res').style.display='none';show('ok','🗂','','ተቀምጧል · ARCHIVED',r.count+' ቅኝቶች ወደ ታሪክ ተቀምጠዋል። ስካነሩ ለአዲስ ዝግጅት ዝግጁ ነው · Ready for the next event');refresh();loadHist()}
+    else{alert(r&&r.error==='sup'?'የሱፐርቫይዘር ኮድ ትክክል አይደለም · Wrong supervisor code':'አልተሳካም — ምንም አልተሰረዘም · Failed, nothing was deleted')}};
+  window.addEventListener('error',function(e){try{show('warn','⚠','','ስህተት · Error',String(e.message||e))}catch(x){}});window.addEventListener('unhandledrejection',function(e){try{show('warn','⚠','','ስህተት · Error',String(e.reason&&e.reason.message||e.reason))}catch(x){}});
+  start();
 })();
-</script></body></html>
+</script>
+</body>
+</html>
