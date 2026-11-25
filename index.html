@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="am"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Time-Limit Link Generator | ጊዜ-ገደብ ሊንክ አመንጪ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#a8812c;--gold2:#d4af5a;--ink:#4a3a22;--bg:#f8ebd3;--card:#fffaf0;--bad:#b03030;--ok:#2f7a3d;color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#f3e6c8;--bg:#231c10;--card:#33290f}}
+*{box-sizing:border-box;margin:0}html,body{background:var(--bg);color:var(--ink);font-family:'Noto Serif Ethiopic',serif}
+main{max-width:520px;margin:0 auto;padding:20px 16px 50px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:20px;color:var(--gold);text-align:center}.sm{font-size:13px;opacity:.8;line-height:1.7}
+.box{background:var(--card);border:1px solid var(--gold2);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px}
+label{font-size:13px;font-weight:600}
+input{width:100%;padding:11px;border:1px solid var(--gold2);border-radius:10px;font:inherit;font-size:15px;background:var(--card);color:var(--ink)}
+button{font:600 15px 'Noto Serif Ethiopic',serif;padding:11px 16px;border-radius:30px;border:1.5px solid var(--gold);background:var(--card);color:var(--gold);cursor:pointer}
+button.pri{background:var(--gold);color:#fff}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}
+.out{word-break:break-all;font-size:13px;background:rgba(212,175,90,.18);padding:10px;border-radius:10px}
+.li{border-top:1px solid rgba(212,175,90,.6);padding:10px 0;font-size:13px;word-break:break-all}
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;color:#fff;font-size:12px;margin-left:6px}
+</style></head><body><main>
+<h1>⏳ ጊዜ-ገደብ ያለው ሊንክ አመንጪ</h1>
+<p class="sm" style="text-align:center">ለደንበኛ የሚሰጥ የቁጥር አመንጪ ሊንክ፤ ከመረጡት ቀን በኋላ ያቆማል። ዋናው ግብዣ አይነካም። (ለእርስዎ ብቻ — ለማንም አይላኩ)</p>
+<div class="box">
+  <label>የግብዣ ድረ-ገጽ ሊንክ (Invitation link)</label>
+  <input id="base" placeholder="https://…">
+  <label>የደንበኛ ስም (ለራስዎ ማስታወሻ)</label>
+  <input id="who" placeholder="ለምሳሌ፦ ያስሚን & አሚር">
+  <label>የሚያልቅበት ቀን (Expires on — እስከዚህ ቀን ይሰራል)</label>
+  <input id="d" type="date">
+  <div class="row"><button id="p7">+7 ቀን</button><button id="p14">+14 ቀን</button><button id="p30">+30 ቀን</button></div>
+  <button class="pri" id="go">ሊንክ አመንጭ</button>
+  <div id="res" style="display:none;flex-direction:column;gap:8px"><div class="out" id="url"></div><div class="sm" id="exp"></div><button id="cp">📋 ሊንክ ቅዳ</button></div>
+</div>
+<div class="box"><b style="font-size:15px">ያመነጩዋቸው ሊንኮች (በዚህ ስልክ ላይ)</b><div id="hist" class="sm">ገና የለም</div></div>
+</main>
+<script>
+(function(){
+  var SECRET='ec2b0b0c02f0186963f6ecf8',$=function(i){return document.getElementById(i)};
+  function LG(k,d){try{return localStorage.getItem(k)||d}catch(e){return d}}function LS(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  async function sig(e){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(SECRET+':'+e));return Array.from(new Uint8Array(b)).slice(0,5).map(function(x){return('0'+x.toString(16)).slice(-2)}).join('')}
+  function today(){var d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()}
+  function fmt(n){var s=String(n);return s.slice(6)+'/'+s.slice(4,6)+'/'+s.slice(0,4)}
+  function iso(dt){return dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2)+'-'+('0'+dt.getDate()).slice(-2)}
+  function plus(n){var d=new Date();d.setDate(d.getDate()+n);$('d').value=iso(d)}
+  $('base').value=LG('base','https://claude.ai/artifact/XhoZLo1uYCyb2NN2WaGag4');
+  $('base').oninput=function(){LS('base',this.value)};
+  $('p7').onclick=function(){plus(7)};$('p14').onclick=function(){plus(14)};$('p30').onclick=function(){plus(30)};
+  function hist(){var L=[];try{L=JSON.parse(LG('hist','[]'))}catch(e){}var H=$('hist');H.innerHTML='';if(!L.length){H.textContent='ገና የለም';return}
+    L.slice().reverse().forEach(function(r){var d=document.createElement('div');d.className='li';var exp=+r.e<today();
+      var b=document.createElement('b');b.textContent=(r.w||'(ስም የለም)')+' · ኮድ '+(r.id||'-');var t=document.createElement('span');t.className='tag';t.style.background=exp?'#b03030':'#2f7a3d';t.textContent=exp?'ጊዜው አልፏል':'ይሰራል';
+      d.appendChild(b);d.appendChild(t);d.appendChild(document.createElement('br'));d.appendChild(document.createTextNode('እስከ '+fmt(r.e)+' · '));d.appendChild(document.createElement('br'));d.appendChild(document.createTextNode(r.u));H.appendChild(d)})}
+  $('go').onclick=async function(){var v=$('d').value,base=$('base').value.trim().split('#')[0];
+    if(!base){alert('የግብዣ ሊንኩን ያስገቡ');return}if(!v){alert('የሚያልቅበትን ቀን ይምረጡ');return}
+    var e=v.replace(/-/g,'');if(+e<today()){alert('ቀኑ ያለፈ ነው');return}
+    var al='abcdefghjkmnpqrstuvwxyz23456789',rb=crypto.getRandomValues(new Uint8Array(6)),id=Array.from(rb).map(function(x){return al[x%al.length]}).join(''),u=base+'#gen-'+e+'-'+id+'-'+await sig(e+'-'+id);$('url').textContent=u;$('exp').textContent='✓ ዝግጅት ኮድ (Event code): '+id+' — ለመግቢያ ሠራተኞች ይስጡ · እስከ '+fmt(e)+' ድረስ ይሰራል፤ ከዚያ በኋላ "ጊዜው አልፏል" ይላል።';$('res').style.display='flex';
+    var L=[];try{L=JSON.parse(LG('hist','[]'))}catch(x){}L.push({w:$('who').value.trim(),e:e,u:u,id:id});LS('hist',JSON.stringify(L.slice(-50)));hist();
+    $('cp').onclick=function(){try{navigator.clipboard.writeText(u);this.textContent='✓ ተቀድቷል'}catch(x){prompt('Copy:',u)}}};
+  hist();
+})();
+</script></body></html>
